@@ -77,7 +77,7 @@ app.post("/api/exercise/new-user", async (req, res) => {
     })
     newUser.save()
     // response
-    res.json({username: newUser.username})
+    res.json({username: newUser.username, _id: newUser._id})
   }
 });
 
@@ -93,12 +93,12 @@ app.post("/api/exercise/add", (req, res) => {
     res.send("'userId' is required")
   }
   if(req.body.duration == null){
-    res.json({dur: req.body.duration})
+    res.send("'duration' is required")
   }
   if(req.body.description == ""){
     res.send("'description' is required")
   }
   console.log(req.body.duration)
-  res.json({dur: req.body.duration})
+  res.json({dur: req.body.duration.instance})
 });
 
