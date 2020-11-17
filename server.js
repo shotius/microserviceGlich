@@ -77,12 +77,22 @@ app.post("/api/exercise/new-user", async (req, res) => {
     })
     newUser.save()
     // response
-    res.json({username: newUser.username})
+    res.json({username: newUser.username, _id: newUser._id})
   }
 });
 
-// add exercise
+// get all user info
+app.get("/api/exercise/users" , async (req, res) => {
+  var allUsers = await USER.find({})
+  console.log(allUsers)
+  res.send(allUsers)
+})
+
+// add exercise to specific user
 app.post("/api/exercise/add", (req, res) => {
+  var userId = req.body.userId
+  var desc =
+  var date = 
   res.send("exercises");
 });
 
