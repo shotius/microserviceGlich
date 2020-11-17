@@ -52,9 +52,9 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 // --database--
 const userSchema = mongoose.Schema({
-  username: {type: String, required: true},
+  username: {type: Number, required: true},
   date: Date,
-  duration: Number,
+  duration: {type: Number, required: true},
   description: String
 })
 const USER = mongoose.model("USER", userSchema);
@@ -77,22 +77,28 @@ app.post("/api/exercise/new-user", async (req, res) => {
     })
     newUser.save()
     // response
-    res.json({username: newUser.username, _id: newUser._id})
+    res.json({username: newUser.username})
   }
 });
 
 // get all user info
 app.get("/api/exercise/users" , async (req, res) => {
   var allUsers = await USER.find({})
-  console.log(allUsers)
   res.send(allUsers)
 })
 
 // add exercise to specific user
 app.post("/api/exercise/add", (req, res) => {
-  var userId = req.body.userId
-  var desc =
-  var date = 
-  res.send("exercises");
+  if (req.body.userId == ""){
+    res.send("'userId' is required")
+  }
+  if(req.body.duration == null){
+    res.json({dur: req.body.duration})
+  }
+  if(req.body.description == ""){
+    res.send("'description' is required")
+  }
+  console.log(req.body.duration)
+  res.json({dur: req.body.duration})
 });
 
