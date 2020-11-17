@@ -60,11 +60,25 @@ const userSchema = mongoose.Schema({
 const USER = mongoose.model("USER", userSchema);
 
 // add user
-app.post("/api/exercise/new-user", (req, res) => {
+app.post("/api/exercise/new-user", async (req, res) => {
   var userName = req.body.username;
-  var user = USER.findOne({username: user})
-  console.log(user)
-  res.send('user')
+  var user = await USER.findOne({username: userName}, (err, user) => {
+   if (err) console.error(err)   
+  })
+  
+  // found user in database
+  if (user){
+    res.json(user)
+  } else {
+    // not found user in database
+    // add user to database
+    var newUser = new USER({
+      username: userName 
+    })
+    newUser.save()
+    // response
+    res.json({username: newUser.username})
+  }
 });
 
 // add exercise
