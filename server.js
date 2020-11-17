@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -5,7 +6,11 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track', { useMongoClient: true } )
+mongoose.connect(process.env.DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
 
 app.use(cors())
 
