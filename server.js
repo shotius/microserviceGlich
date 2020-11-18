@@ -105,15 +105,16 @@ app.post("/api/exercise/add", async (req, res, next) => {
   */
 
   // show the user obj in the window
-  await USER.findById(req.body.userId)
+  var user = await USER.findById(req.body.userId)
     //.select("username date duration description")
-    .select("-__v")
     .exec((err, user) => {
       if(err) next(err.message);
       user.log.push(update);
       user.save();
-      res.json(user);
+      update["username"]=user.username
+      res.json(update);
     });
+  
 });
 
 // Error Handling middleware
