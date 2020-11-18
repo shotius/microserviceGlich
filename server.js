@@ -52,7 +52,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 // --database--
 const userSchema = mongoose.Schema({
-  username: {type: Number, required: true},
+  username: {type: String, required: true},
   date: Date,
   duration: {type: Number, required: true},
   description: String
@@ -62,6 +62,7 @@ const USER = mongoose.model("USER", userSchema);
 // add user
 app.post("/api/exercise/new-user", async (req, res) => {
   var userName = req.body.username;
+  // search user in database
   var user = await USER.findOne({username: userName}, (err, user) => {
    if (err) console.error(err)   
   })
@@ -98,7 +99,7 @@ app.post("/api/exercise/add", (req, res) => {
   if(req.body.description == ""){
     res.send("'description' is required")
   }
-  console.log(req.body.duration)
+ 
   res.json({dur: req.body.duration.instance})
 });
 
