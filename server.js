@@ -26,11 +26,9 @@ app.get("/", (req, res) => {
 // --database--
 const userSchema = mongoose.Schema({
   username: { type: String, required: true },
-  log: {
-    date: String,
-    duration: Number,
-    description: String
-  }
+  date: String,
+  duration: Number,
+  description: String
 });
 const USER = mongoose.model("USER", userSchema);
 
@@ -111,6 +109,7 @@ app.post("/api/exercise/add", async (req, res, next) => {
   );
 
 */
+  /*
   await USER.findByIdAndUpdate(
     req.body.userId,
     { $push: { log: newSession } },
@@ -127,6 +126,26 @@ app.post("/api/exercise/add", async (req, res, next) => {
       
     }
   );
+  */
+  
+  
+ await USER.findByIdAndUpdate(
+    req.body.userId,
+    newSession,
+    {new:true},
+    (err, user, next) => {
+      if (err) next(err);
+    }
+  )
+  
+  await USER.findById(
+    req.body.userId,
+    (err, user, next)=>{
+      if (!err){
+        res.json(user)
+      }
+    }
+  )
 });
 
 // Error Handling middleware
