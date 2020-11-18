@@ -89,7 +89,7 @@ app.get("/api/exercise/users" , async (req, res) => {
 })
 
 // add exercise to specific user
-app.post("/api/exercise/add", async (req, res) => {
+app.post("/api/exercise/add", async (req, res, next) => {
   // field check 
   if (req.body.userId == ""){
     res.send("'userId' is required")
@@ -100,6 +100,7 @@ app.post("/api/exercise/add", async (req, res) => {
   if(req.body.description == ""){
     res.send("'description' is required")
   }
+  // handle optional date field
   if(req.body.date == ""){
     var date = new Date().toGMTString()
   } else {
@@ -107,16 +108,15 @@ app.post("/api/exercise/add", async (req, res) => {
     var date = new Date(d).toGMTString()  
   }
  
+  // search user in order to add options to it
   var user = await USER.findById(req.body.userId, (err, user) => {
     if (err){
-      res.send(err);
+      next(err.message)
     }
   });
   
-  if (user){
-    res.json({user: user})  
-  } else {
-    res.send("can't find user by _id   " + "'" + req.body.userId + "''")
-  }
+  
+  res.json(user)  
+  
   
 });
