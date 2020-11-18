@@ -102,10 +102,10 @@ app.post("/api/exercise/add", async (req, res, next) => {
   }
   // handle optional date field
   if(req.body.date == ""){
-    var date = new Date().toUTCString()
+    var date = new Date().toDateString()
   } else {
-    var d = Date.parse(req.body.date);
-    var date = new Date(d).toGMTString()  
+    var d = await Date.parse(req.body.date);
+    var date = await new  Date(d).toDateString()  
   }
   
   console.log(date)
@@ -113,7 +113,6 @@ app.post("/api/exercise/add", async (req, res, next) => {
   var update = {
     duration: req.body.duration,
     description: req.body.description,
-    date: date
   }
   // search user in order to add options to it
   var user = await USER.findByIdAndUpdate(req.body.userId, update, (err, user) => {
@@ -121,7 +120,7 @@ app.post("/api/exercise/add", async (req, res, next) => {
       next(err.message)
     }
   });
-  
+  user.date = date
   
   res.json(user)  
   
