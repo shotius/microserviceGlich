@@ -104,8 +104,8 @@ app.post("/api/exercise/add", async (req, res, next) => {
   if(req.body.date == ""){
     var date = new Date().toDateString()
   } else {
-    var d = await Date.parse(req.body.date);
-    var date = await new  Date(d).toDateString()  
+    var d = Date.parse(req.body.date);
+    var date = new  Date(d).toDateString()  
   }
   
   console.log(date)
@@ -116,13 +116,18 @@ app.post("/api/exercise/add", async (req, res, next) => {
     date: date
   }
   // search user in order to add options to it
-  var user = await USER.findByIdAndUpdate(req.body.userId, update, (err, user) => {
+  await USER.findByIdAndUpdate(req.body.userId, update, {new: true}, (err, user) => {
     if (err){
       next(err.message)
     }
   });
-    
-  res.json()  
+  
+  // show the user obj in the window
+  await USER.findById(req.body.userId)
+    //.select("username date duration description")
+    .select("-__v")
+    .exec((err, user) => {res.json(user)})
+  
   
   
 });
