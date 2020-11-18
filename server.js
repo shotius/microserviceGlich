@@ -99,7 +99,12 @@ app.post("/api/exercise/add", (req, res) => {
   if(req.body.description == ""){
     res.send("'description' is required")
   }
+  if(req.body.date == ""){
+    var date = new Date().toGMTString()
+  } else {
+    var date = req.body.req
+  }
  
-  res.json({dur: req.body.duration.instance})
+  res.json({dur: date})
 });
 
