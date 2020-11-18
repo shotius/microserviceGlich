@@ -107,9 +107,15 @@ app.post("/api/exercise/add", async (req, res, next) => {
     var d = Date.parse(req.body.date);
     var date = new Date(d).toGMTString()  
   }
- 
+  // options to add to the user
+  var update = {
+    duration: req.body.duration,
+    description: req.body.description,
+    date: req.body.date
+  }
+  console.log(date)
   // search user in order to add options to it
-  var user = await USER.findById(req.body.userId, (err, user) => {
+  var user = await USER.findByIdAndUpdate(req.body.userId, update, (err, user) => {
     if (err){
       next(err.message)
     }
