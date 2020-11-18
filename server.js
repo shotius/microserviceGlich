@@ -91,6 +91,7 @@ app.post("/api/exercise/add", async (req, res, next) => {
     date: date
   };
   // search user in order to add options to it
+  /*
   await USER.findByIdAndUpdate(
     req.body.userId,
     update,
@@ -101,12 +102,16 @@ app.post("/api/exercise/add", async (req, res, next) => {
       }
     }
   );
+  */
 
   // show the user obj in the window
   await USER.findById(req.body.userId)
     //.select("username date duration description")
     .select("-__v")
     .exec((err, user) => {
+      if(err) next(err.message);
+      user.log.push(update);
+      user.save();
       res.json(user);
     });
 });
