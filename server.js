@@ -26,9 +26,12 @@ app.get("/", (req, res) => {
 // --database--
 const userSchema = mongoose.Schema({
   username: { type: String, required: true },
-  date: String,
-  duration: Number,
-  description: String
+  log:{
+    date: String,
+    duration: Number,
+    description: String  
+  }
+  
 });
 const USER = mongoose.model("USER", userSchema);
 
