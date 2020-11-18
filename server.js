@@ -54,7 +54,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 const userSchema = mongoose.Schema({
   username: {type: String, required: true},
   date: Date,
-  duration: {type: Number, required: true},
+  duration: Number,
   description: String
 })
 const USER = mongoose.model("USER", userSchema);
@@ -107,12 +107,16 @@ app.post("/api/exercise/add", async (req, res) => {
     var date = new Date(d).toGMTString()  
   }
  
-  var user = await USER.findById(req.body.userId)
+  var user = await USER.findById(req.body.userId, (err, user) => {
+    if (err){
+      res.send(err);
+    }
+  });
+  
   if (user){
-    res.json({dur: user})  
+    res.json({user: user})  
   } else {
-    res.send("can't find user by _id " + "'" + req.body.userId + "''")
+    res.send("can't find user by _id   " + "'" + req.body.userId + "''")
   }
   
 });
-
