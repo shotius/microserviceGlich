@@ -101,7 +101,34 @@ app.post(
 app.get("/api/exercise/log", (req, res) => {
   USER.findById(req.query.userId, (err, user) => {
     if (!err) {
-      let responseObj = Object.assign({}, user._doc);
+      let responseObj = user;
+    
+      if (req.query.from || req.query.to){
+        
+        var fromDate = new Date(0);
+        var toDate = new Date();
+      
+        if (req.query.from){
+          fromDate = new Date(req.query.from)
+        }
+        
+        if(req.query.to){
+          toDate = new Date(req.query.to)
+        }
+        
+        fromDate = fromDate.getTime();
+        toDate = toDate.getTime();
+        
+        responseObj.log = responseObj.log.filter((session) => {
+          let sessionDate = new Date(session.date).getTime();
+          
+          return sessionDate >= fromDate && sessionDate <= toDate;
+        });
+        
+              
+      }
+      
+      
       responseObj["count"] = user.log.length;
       res.json(responseObj);
     }
