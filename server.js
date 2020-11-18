@@ -84,7 +84,7 @@ app.post("/api/exercise/add", async (req, res, next) => {
   }
 
   // options to add to the user
-  var update = {
+  var newSession = {
     duration: req.body.duration,
     description: req.body.description,
     date: date
@@ -113,11 +113,18 @@ app.post("/api/exercise/add", async (req, res, next) => {
 */
   await USER.findByIdAndUpdate(
     req.body.userId,
-    update,
+    { $push: { log: newSession } },
     { new: true },
-    (err, user) => {
-      if (err) next(err.message);     
-      res.json(user);
+    (err, updatedUser) => {
+      if (err) next(err.message);  
+       let responseObject = {}
+        responseObject['_id'] = updatedUser.id
+        responseObject['username'] = updatedUser.username
+        responseObject['date'] = new Date(newSession.date).toDateString()
+        responseObject['description'] = newSession.description
+        responseObject['duration'] = newSession.duration
+        res.json(responseObject)
+      
     }
   );
 });
