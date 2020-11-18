@@ -102,41 +102,39 @@ app.get("/api/exercise/log", (req, res) => {
   USER.findById(req.query.userId, (err, user) => {
     if (!err) {
       let responseObj = user;
-    
-      if (req.query.from || req.query.to){
-        
+
+      if (req.query.from || req.query.to) {
         var fromDate = new Date(0);
         var toDate = new Date();
-      
-        if (req.query.from){
-          fromDate = new Date(req.query.from)
+
+        if (req.query.from) {
+          fromDate = new Date(req.query.from);
         }
-        
-        if(req.query.to){
-          toDate = new Date(req.query.to)
+
+        if (req.query.to) {
+          toDate = new Date(req.query.to);
         }
-        
+
         fromDate = fromDate.getTime();
         toDate = toDate.getTime();
-        
-        responseObj.log = responseObj.log.filter((session) => {
+
+        responseObj.log = responseObj.log.filter(session => {
           let sessionDate = new Date(session.date).getTime();
-          
+
           return sessionDate >= fromDate && sessionDate <= toDate;
         });
-        
-              
       }
-      
-      
+
+      if (req.query.limit) {
+        responseObj.log = responseObj.log.slice(0, req.query.limit);
+      }
+
+      responseObj = responseObj.toJSON();
       responseObj["count"] = user.log.length;
       res.json(responseObj);
     }
   });
-
 });
-
-
 
 // Error Handling middleware
 app.use((err, req, res, next) => {
