@@ -107,7 +107,7 @@ app.post("/api/exercise/add", async (req, res) => {
     var date = new Date(d).toGMTString()  
   }
  
-  var filter = {_id:}
+  var filter = {_id: req.body}
   USER.findOneAndUpdate({})
   res.json({dur: date})
 });
