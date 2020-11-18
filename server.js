@@ -53,7 +53,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 // --database--
 const userSchema = mongoose.Schema({
   username: {type: String, required: true},
-  date: Date,
+  date: String,
   duration: Number,
   description: String
 })
@@ -113,6 +113,7 @@ app.post("/api/exercise/add", async (req, res, next) => {
   var update = {
     duration: req.body.duration,
     description: req.body.description,
+    date: date
   }
   // search user in order to add options to it
   var user = await USER.findByIdAndUpdate(req.body.userId, update, (err, user) => {
@@ -120,9 +121,8 @@ app.post("/api/exercise/add", async (req, res, next) => {
       next(err.message)
     }
   });
-  user.date = date
-  
-  res.json(user)  
+    
+  res.json()  
   
   
 });
