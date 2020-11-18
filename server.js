@@ -66,7 +66,7 @@ app.get("/api/exercise/users", async (req, res) => {
 
 // add exercise to specific user
 app.post("/api/exercise/add", async (req, res, next) => {
-  // field check
+  // required fields check
   if (req.body.userId == "") {
     res.send("'userId' is required");
   }
@@ -84,7 +84,6 @@ app.post("/api/exercise/add", async (req, res, next) => {
     var date = new Date(d).toDateString();
   }
 
-  console.log(date);
   // options to add to the user
   var update = {
     duration: req.body.duration,
@@ -92,28 +91,36 @@ app.post("/api/exercise/add", async (req, res, next) => {
     date: date
   };
   // search user in order to add options to it
-  /*
+  
   await USER.findByIdAndUpdate(
     req.body.userId,
-    update,
+    {$push: {log: update}},
     { new: true },
     (err, user) => {
       if (err) {
         next(err.message);
+      } else {
+        let showUser = {}
+        showUser["_id"] = user._id;
+        showUser["username"] = user.username;
+        showUser["description"] = user.description;
+        showUser["duration"] = user.duration;
+        shoUser[""]
+        res.json(showUser);
       }
     }
   );
-  */
+  
 
   // show the user obj in the window
-  var user = await USER.findById(req.body.userId)
+  /*var user = await USER.findById(req.body.userId)
     //.select("username date duration description")
     .exec((err, user) => {
       if(err) next(err.message);
       
       res.json(user);
     });
-  
+  */
 });
 
 // Error Handling middleware
