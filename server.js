@@ -107,8 +107,12 @@ app.post("/api/exercise/add", async (req, res) => {
     var date = new Date(d).toGMTString()  
   }
  
-  var filter = {_id: req.body}
-  USER.findOneAndUpdate({})
-  res.json({dur: date})
+  var user = await USER.findById(req.body.userId)
+  if (user){
+    res.json({dur: user})  
+  } else {
+    res.send("can't find user by _id " + "'" + req.body.userId + "''")
+  }
+  
 });
 
