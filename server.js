@@ -26,9 +26,13 @@ app.get("/", (req, res) => {
 // --database--
 const userSchema = mongoose.Schema({
   username: { type: String, required: true },
-  date: String,
-  duration: Number,
-  description: String
+  log: [
+    {
+      date: String,
+      duration: Number,
+      description: String
+    }
+  ]
 });
 const USER = mongoose.model("USER", userSchema);
 
@@ -61,85 +65,51 @@ app.get("/api/exercise/users", async (req, res) => {
   res.send(allUsers);
 });
 
-// add exercise to specific user
-app.post("/api/exercise/add", async (req, res, next) => {
-  // required fields check
-  if (req.body.userId == "") {
-    res.send("'userId' is required");
-  }
-  if (req.body.duration == "") {
-    res.send("'duration' is required");
-  }
-  if (req.body.description == "") {
-    res.send("'description' is required");
-  }
-  // handle optional date field
-  if (req.body.date == "") {
-    var date = new Date().toDateString();
-  } else {
-    var d = Date.parse(req.body.date);
-    var date = new Date(d).toDateString();
-  }
+app.post(
+  "/api/exercise/add",
+  bodyParser.urlencoded({ extended: false }),
+  (request, response) => {
+    let newSession = {
+      description: request.body.description,
+      duration: parseInt(request.body.duration),
+      date: request.body.date
+    };
 
-  // options to add to the user
-  var newSession = {
-    duration: req.body.duration,
-    description: req.body.description,
-    date: date
-  };
-  /*
-  // search user in order to add options to it
-  await USER.findByIdAndUpdate(
-    req.body.userId,
-    { $push: { log: update } },
-    { new: true },
-    (err, user) => {
-      if (err) {
-        next(err.message);
-      } else {
-        let showUser = {};
-        showUser["_id"] = user._id;
-        showUser["username"] = user.username;
-        showUser["description"] = update.description;
-        showUser["duration"] = update.duration;
-        showUser["date"] = update.date;
-        res.json(showUser);
+    if (newSession.date === "") {
+      newSession.date = new Date().toISOString().substring(0, 10);
+    }
+
+    USER.findByIdAndUpdate(
+      request.body.userId,
+      { $push: { log: newSession } },
+      { new: true },
+      (error, updatedUser) => {
+        if (!error) {
+          let responseObject = {};
+          responseObject["_id"] = updatedUser.id;
+          responseObject["username"] = updatedUser.username;
+          responseObject["date"] = new Date(newSession.date).toDateString();
+          responseObject["description"] = newSession.description;
+          responseObject["duration"] = newSession.duration;
+          response.json(responseObject);
+        }
       }
-    }
-  );
+    );
+  }
+);
 
-*/
-  /*
-  await USER.findByIdAndUpdate(
-    req.body.userId,
-    { $push: { log: newSession } },
-    { new: true },
-    (err, updatedUser) => {
-      if (err) next(err.message);  
-       let responseObject = {}
-        responseObject['_id'] = updatedUser.id
-        responseObject['username'] = updatedUser.username
-        responseObject['date'] = new Date(newSession.date).toDateString()
-        responseObject['description'] = newSession.description
-        responseObject['duration'] = newSession.duration
-        res.json(responseObject)
-      
+app.get("/api/exercise/log", (req, res) => {
+  USER.findById(req.query.userId, (err, user) => {
+    if (!err) {
+      let responseObj = Object.assign({}, user._doc);
+      responseObj["count"] = user.log.length;
+      res.json(responseObj);
     }
-  );
-  */
-  
-  
-  USER.findByIdAndUpdate(
-    req.body.userId,
-    newSession,
-    {new:true},
-    (err, user, next) => {
-      if (err) next(err)
-    }
-  )
-  
-  
+  });
+
 });
+
+
 
 // Error Handling middleware
 app.use((err, req, res, next) => {
