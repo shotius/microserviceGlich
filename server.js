@@ -26,11 +26,9 @@ app.get("/", (req, res) => {
 // --database--
 const userSchema = mongoose.Schema({
   username: { type: String, required: true },
-  log:[{
-    date: String,
-    duration: Number,
-    description: String
-  }]
+  date: String,
+  duration: Number,
+  description: String
 });
 const USER = mongoose.model("USER", userSchema);
 
@@ -109,10 +107,8 @@ app.post("/api/exercise/add", async (req, res, next) => {
     //.select("username date duration description")
     .exec((err, user) => {
       if(err) next(err.message);
-      user.log.push(update);
-      user.save();
-      update["username"]=user.username
-      res.json(update);
+      
+      res.json(user);
     });
   
 });
