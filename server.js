@@ -109,11 +109,11 @@ app.post("/api/exercise/add", async (req, res, next) => {
       }
     }
   );
-});
+
 */
   await USER.findByIdAndUpdate(
     req.body.userId,
-    { $push: { log: update } },
+    update,
     { new: true },
     (err, user) => {
       if (err) next(err.message);     
