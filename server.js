@@ -102,18 +102,19 @@ app.post("/api/exercise/add", async (req, res, next) => {
   }
   // handle optional date field
   if(req.body.date == ""){
-    var date = new Date().toGMTString()
+    var date = new Date().toUTCString()
   } else {
     var d = Date.parse(req.body.date);
     var date = new Date(d).toGMTString()  
   }
+  
+  console.log(date)
   // options to add to the user
   var update = {
     duration: req.body.duration,
     description: req.body.description,
-    date: req.body.date
+    date: date
   }
-  console.log(date)
   // search user in order to add options to it
   var user = await USER.findByIdAndUpdate(req.body.userId, update, (err, user) => {
     if (err){
