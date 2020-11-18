@@ -88,8 +88,8 @@ app.get("/api/exercise/log", (req, res) => {
     req.query.userId,
     (err, user, next) => {
       if(err) next(err);
-      var responseObj = {};
-      Object.assign(user, responseObj)
+      let responseObj = Object.assign({}, user._doc);
+      responseObj["count"] = user.log.length;
       res.json(responseObj)
     }
   )
