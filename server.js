@@ -89,11 +89,12 @@ app.get("/api/exercise/users" , async (req, res) => {
 })
 
 // add exercise to specific user
-app.post("/api/exercise/add", (req, res) => {
+app.post("/api/exercise/add", async (req, res) => {
+  // field check 
   if (req.body.userId == ""){
     res.send("'userId' is required")
   }
-  if(req.body.duration == null){
+  if(req.body.duration == ""){
     res.send("'duration' is required")
   }
   if(req.body.description == ""){
@@ -102,9 +103,12 @@ app.post("/api/exercise/add", (req, res) => {
   if(req.body.date == ""){
     var date = new Date().toGMTString()
   } else {
-    var date = req.body.req
+    var d = Date.parse(req.body.date);
+    var date = new Date(d).toGMTString()  
   }
  
+  var filter = {_id:}
+  USER.findOneAndUpdate({})
   res.json({dur: date})
 });
 
