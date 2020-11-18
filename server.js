@@ -26,12 +26,11 @@ app.get("/", (req, res) => {
 // --database--
 const userSchema = mongoose.Schema({
   username: { type: String, required: true },
-  log:{
+  log: {
     date: String,
     duration: Number,
-    description: String  
+    description: String
   }
-  
 });
 const USER = mongoose.model("USER", userSchema);
 
@@ -90,37 +89,37 @@ app.post("/api/exercise/add", async (req, res, next) => {
     description: req.body.description,
     date: date
   };
+  /*
   // search user in order to add options to it
-  
   await USER.findByIdAndUpdate(
     req.body.userId,
-    {$push: {log: update}},
+    { $push: { log: update } },
     { new: true },
     (err, user) => {
       if (err) {
         next(err.message);
       } else {
-        let showUser = {}
+        let showUser = {};
         showUser["_id"] = user._id;
         showUser["username"] = user.username;
-        showUser["description"] = user.description;
-        showUser["duration"] = user.duration;
-        shoUser[""]
+        showUser["description"] = update.description;
+        showUser["duration"] = update.duration;
+        showUser["date"] = update.date;
         res.json(showUser);
       }
     }
   );
-  
-
-  // show the user obj in the window
-  /*var user = await USER.findById(req.body.userId)
-    //.select("username date duration description")
-    .exec((err, user) => {
-      if(err) next(err.message);
-      
+});
+*/
+  await USER.findByIdAndUpdate(
+    req.body.userId,
+    { $push: { log: update } },
+    { new: true },
+    (err, user) => {
+      if (err) next(err.message);     
       res.json(user);
-    });
-  */
+    }
+  );
 });
 
 // Error Handling middleware
